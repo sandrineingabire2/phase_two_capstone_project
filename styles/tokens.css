@@ -1,0 +1,12 @@
+:root {
+  --border-radius: 1rem;
+  --shadow-soft: 0 15px 35px rgba(31, 40, 57, 0.12);
+  --gradient-brand: linear-gradient(135deg, #b69d74, #1f2839);
+}
+
+.card-surface {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  background: var(--color-surface);
+}
+
