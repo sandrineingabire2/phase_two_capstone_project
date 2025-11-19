@@ -17,7 +17,9 @@ export async function SiteHeader() {
           <span className="text-lg font-semibold tracking-tight text-[var(--color-foreground)]">
             {siteMetadata.name}
           </span>
-          <span className="text-sm text-[var(--color-muted)]">{siteMetadata.description}</span>
+          <span className="text-sm text-[var(--color-muted)]">
+            {siteMetadata.description}
+          </span>
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
           <nav className="flex flex-wrap gap-2">
@@ -34,8 +36,12 @@ export async function SiteHeader() {
                     {avatarLetter}
                   </span>
                   <div className="flex flex-col leading-tight">
-                    <span className="font-semibold">{session.user?.name ?? "Member"}</span>
-                    <span className="text-xs text-[var(--color-muted)]">{session.user?.email}</span>
+                    <span className="font-semibold">
+                      {session.user?.name ?? "Member"}
+                    </span>
+                    <span className="text-xs text-[var(--color-muted)]">
+                      {session.user?.email}
+                    </span>
                   </div>
                 </div>
                 <SignOutButton />

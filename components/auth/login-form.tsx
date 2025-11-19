@@ -49,18 +49,24 @@ export function LoginForm() {
           placeholder="you@example.com"
           {...register("email")}
         />
-        {errors.email ? <p className="text-xs text-red-600">{errors.email.message}</p> : null}
+        {errors.email ? (
+          <p className="text-xs text-red-600">{errors.email.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Password</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Password
+        </span>
         <input
           type="password"
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"
           placeholder="••••••••"
           {...register("password")}
         />
-        {errors.password ? <p className="text-xs text-red-600">{errors.password.message}</p> : null}
+        {errors.password ? (
+          <p className="text-xs text-red-600">{errors.password.message}</p>
+        ) : null}
       </label>
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}

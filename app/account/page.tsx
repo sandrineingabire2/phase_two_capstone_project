@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AccountForm } from "@/components/auth/account-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { PostManager } from "@/components/posts/post-manager";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -14,7 +15,19 @@ export default async function AccountPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: { posts: true },
+    include: {
+      posts: {
+        where: { deletedAt: null },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          status: true,
+          createdAt: true,
+        },
+      },
+    },
   });
 
   if (!user) {
@@ -37,13 +50,17 @@ export default async function AccountPage() {
               </div>
             )}
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">Account</p>
-              <h1 className="text-2xl font-semibold text-[var(--color-foreground)]">{user.name}</h1>
+              <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">
+                Account
+              </p>
+              <h1 className="text-2xl font-semibold text-[var(--color-foreground)]">
+                {user.name}
+              </h1>
               <p className="text-sm text-[var(--color-muted)]">{user.email}</p>
             </div>
           </div>
           <Link
-            href={/profile/}
+            href={`/profile/${user.id}`}
             className="text-sm font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
           >
             View public profile →
@@ -53,15 +70,21 @@ export default async function AccountPage() {
 
       <section className="grid gap-6 md:grid-cols-2">
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-[var(--color-foreground)]">Profile</h2>
-          <p className="text-sm text-[var(--color-muted)]">Update your avatar and short bio.</p>
+          <h2 className="text-lg font-semibold text-[var(--color-foreground)]">
+            Profile
+          </h2>
+          <p className="text-sm text-[var(--color-muted)]">
+            Update your avatar and short bio.
+          </p>
           <div className="mt-4">
             <AccountForm initialBio={user.bio} initialAvatarUrl={user.avatarUrl} />
           </div>
         </div>
 
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-[var(--color-foreground)]">Auth status</h2>
+          <h2 className="text-lg font-semibold text-[var(--color-foreground)]">
+            Auth status
+          </h2>
           <ul className="mt-4 space-y-3 text-sm text-[var(--color-foreground)]">
             <li>
               Signed in as <span className="font-semibold">{user.email}</span>
@@ -77,6 +100,23 @@ export default async function AccountPage() {
           <div className="mt-6">
             <SignOutButton />
           </div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-lg font-semibold text-[var(--color-foreground)]">Posts</h2>
+          <p className="text-sm text-[var(--color-muted)]">
+            Manage drafts, publish updates, or archive posts. Editing happens in the Lab 3
+            editor.
+          </p>
+        </div>
+        <div className="mt-4">
+          <PostManager
+            initialPosts={user.posts.map((post) => ({
+              ...post,
+              createdAt: post.createdAt.toISOString(),
+            }))}
+          />
         </div>
       </section>
     </div>

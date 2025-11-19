@@ -74,16 +74,24 @@ export default function Home() {
 
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold text-[var(--color-foreground)]">Protected sandbox</h2>
+          <h2 className="text-xl font-semibold text-[var(--color-foreground)]">
+            Protected sandbox
+          </h2>
           <p className="text-sm text-[var(--color-muted)]">
-            Client-side routing checks ensure only signed-in builders can trigger sensitive actions.
+            Client-side routing checks ensure only signed-in builders can trigger
+            sensitive actions.
           </p>
         </div>
         <div className="mt-4 rounded-xl border border-dashed border-[var(--color-border)] bg-white/60 p-4 text-sm text-[var(--color-foreground)]">
           <ProtectedContent>
             <div className="flex flex-col gap-2">
-              <p>✅ You are authenticated, so experimental editor features are unlocked.</p>
-              <Link href="/account" className="text-sm font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline">
+              <p>
+                ✅ You are authenticated, so experimental editor features are unlocked.
+              </p>
+              <Link
+                href="/account"
+                className="text-sm font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
+              >
                 Jump to your account →
               </Link>
             </div>

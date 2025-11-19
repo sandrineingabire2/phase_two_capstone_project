@@ -11,8 +11,11 @@ export default function SignupPage() {
       >
         <SignupForm />
         <p className="text-center text-sm text-[var(--color-muted)]">
-          Already have access? {" "}
-          <Link href="/login" className="font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline">
+          Already have access?{" "}
+          <Link
+            href="/login"
+            className="font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
+          >
             Sign in
           </Link>
         </p>

@@ -59,14 +59,18 @@ export function SignupForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Full name</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Full name
+        </span>
         <input
           type="text"
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"
           placeholder="Alex Studio"
           {...register("name")}
         />
-        {errors.name ? <p className="text-xs text-red-600">{errors.name.message}</p> : null}
+        {errors.name ? (
+          <p className="text-xs text-red-600">{errors.name.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">
@@ -77,33 +81,45 @@ export function SignupForm() {
           placeholder="you@example.com"
           {...register("email")}
         />
-        {errors.email ? <p className="text-xs text-red-600">{errors.email.message}</p> : null}
+        {errors.email ? (
+          <p className="text-xs text-red-600">{errors.email.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Password</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Password
+        </span>
         <input
           type="password"
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"
           placeholder="At least 8 characters"
           {...register("password")}
         />
-        {errors.password ? <p className="text-xs text-red-600">{errors.password.message}</p> : null}
+        {errors.password ? (
+          <p className="text-xs text-red-600">{errors.password.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Avatar URL</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Avatar URL
+        </span>
         <input
           type="url"
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"
           placeholder="https://images.example/avatar.png"
           {...register("avatarUrl")}
         />
-        {errors.avatarUrl ? <p className="text-xs text-red-600">{errors.avatarUrl.message}</p> : null}
+        {errors.avatarUrl ? (
+          <p className="text-xs text-red-600">{errors.avatarUrl.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Short bio</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Short bio
+        </span>
         <textarea
           rows={4}
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"

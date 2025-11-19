@@ -11,8 +11,11 @@ export default function LoginPage() {
       >
         <LoginForm />
         <p className="text-center text-sm text-[var(--color-muted)]">
-          Need an account? {" "}
-          <Link href="/signup" className="font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline">
+          Need an account?{" "}
+          <Link
+            href="/signup"
+            className="font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
+          >
             Create one
           </Link>
         </p>

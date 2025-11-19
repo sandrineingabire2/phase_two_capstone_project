@@ -17,7 +17,11 @@ export function ProtectedContent({ children }: ProtectedContentProps) {
   if (status !== "authenticated") {
     return (
       <p className="text-sm text-[var(--color-muted)]">
-        This section is protected. <Link href="/login" className="underline">Sign in</Link> to continue.
+        This section is protected.{" "}
+        <Link href="/login" className="underline">
+          Sign in
+        </Link>{" "}
+        to continue.
       </p>
     );
   }

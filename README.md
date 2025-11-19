@@ -67,3 +67,48 @@ npm run dev
 ```
 
 Set environment variables in `.env` (a starter file is already provided) and run `npx prisma migrate dev` whenever you change the schema.
+
+---
+
+## Lab 3 — Editor & Rich Content
+
+### Highlights
+
+- **Jodit-based rich text editor** with bold/italic/heading/lists/code/link/quote controls and live preview.
+- **Image upload flow** that posts to `/api/uploads`, stores files under `public/uploads`, and returns shareable URLs for embeds and covers.
+- **Draft + publish flows**: Save client-side drafts in `localStorage`, preview before publishing, and send final content to `/api/posts` backed by Prisma.
+- **Protected `/editor` route** with middleware + server checks so only authenticated authors can compose new posts.
+- **Post schema enhancements** (`coverImage`, `status`) to support richer publishing states.
+
+### New routes
+
+- `app/editor/page.tsx` — main editor experience.
+- `app/api/uploads/route.ts` — handles client → storage uploads.
+- `app/api/posts/route.ts` — persists drafts/published posts via Prisma.
+
+Run `npm run dev` and visit `/editor` after signing in to experiment with Lab 3.
+
+---
+
+## Lab 4 — Posts CRUD & Media Handling
+
+### What’s new
+
+- **Post model upgrades**: slugs, status enum, and soft-delete timestamps keep URLs stable and allow archival.
+- **Full REST API**
+  - `GET /api/posts` (list with filters)
+  - `POST /api/posts` (create draft/published posts)
+  - `GET/PUT/DELETE /api/posts/[id-or-slug]` (fetch, update, soft-delete)
+- **Optimized media surfaces**: `/posts` grid and `/posts/[slug]` detail view both use `next/image` with responsive `sizes`, lazy loading, and graceful fallbacks.
+- **Account post manager**: toggle draft/published or archive entries directly from `/account`.
+- **SSG-ready detail pages**: `generateStaticParams` prebuilds published slugs while still revalidating every 5 minutes.
+
+### Try it out
+
+1. `npm run dev`
+2. Sign in and create a post (upload cover/media) via `/editor`
+3. Visit `/posts` to review the optimized listing
+4. Open `/posts/[slug]` for the full article view
+5. Manage lifecycle (draft/publish/delete) from `/account`
+
+All linting/formatting continues to run via Husky (`npm run lint`, `npm run format:check`).

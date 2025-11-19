@@ -61,14 +61,18 @@ export function AccountForm({ initialBio, initialAvatarUrl }: AccountFormProps) 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <label className="block space-y-1">
-        <span className="text-sm font-medium text-[var(--color-foreground)]">Avatar URL</span>
+        <span className="text-sm font-medium text-[var(--color-foreground)]">
+          Avatar URL
+        </span>
         <input
           type="url"
           className="w-full rounded-xl border border-[var(--color-border)] bg-white/70 px-4 py-3 text-sm shadow-inner focus:border-[var(--color-accent)] focus:outline-none"
           placeholder="https://images.example/avatar.png"
           {...register("avatarUrl")}
         />
-        {errors.avatarUrl ? <p className="text-xs text-red-600">{errors.avatarUrl.message}</p> : null}
+        {errors.avatarUrl ? (
+          <p className="text-xs text-red-600">{errors.avatarUrl.message}</p>
+        ) : null}
       </label>
 
       <label className="block space-y-1">

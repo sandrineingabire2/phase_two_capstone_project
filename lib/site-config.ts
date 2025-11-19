@@ -12,6 +12,8 @@ export const navigationLinks = [
   { href: "/", label: "Overview" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
+  { href: "/posts", label: "Posts" },
+  { href: "/editor", label: "Editor" },
 ];
 
 export const featuredHighlights = [
@@ -37,8 +39,18 @@ export const labMilestones = [
   },
   {
     title: "Layout System",
-    status: "In Progress",
+    status: "Complete",
     description: "Establish global header, footer, and shared grid container.",
+  },
+  {
+    title: "Rich Content",
+    status: "Complete",
+    description: "Add the Lab 3 editor with media uploads, preview, and drafts.",
+  },
+  {
+    title: "Posts CRUD",
+    status: "In Progress",
+    description: "Full lifecycle APIs, listing, detail pages, and media handling.",
   },
   {
     title: "Content Iteration",

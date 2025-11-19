@@ -24,7 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-[var(--color-background)]">
-      <body className={`${inter.variable} antialiased bg-[var(--color-background)] text-[var(--color-foreground)]`}>
+      <body
+        className={`${inter.variable} antialiased bg-[var(--color-background)] text-[var(--color-foreground)]`}
+      >
         <div className="flex min-h-screen flex-col bg-[var(--color-background)] text-[var(--color-foreground)]">
           <SiteHeader />
           <AuthProvider>
@@ -38,4 +40,3 @@ export default function RootLayout({
     </html>
   );
 }
-
