@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { navigationLinks, siteMetadata } from "@/lib/site-config";
 import { NavLink } from "@/components/navigation/nav-link";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export async function SiteHeader() {
   const session = await auth();
@@ -62,6 +63,7 @@ export async function SiteHeader() {
                 </Link>
               </div>
             )}
+            <ThemeToggle />
           </div>
         </div>
       </div>

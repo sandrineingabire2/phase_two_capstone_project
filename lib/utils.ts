@@ -15,3 +15,11 @@ export function slugify(input: string) {
 
   return base;
 }
+
+export function formatTagName(input: string) {
+  return input
+    .trim()
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}

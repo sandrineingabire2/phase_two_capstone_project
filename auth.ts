@@ -3,8 +3,14 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/auth";
 
+const authSecret =
+  process.env.AUTH_SECRET ??
+  process.env.NEXTAUTH_SECRET ??
+  (process.env.NODE_ENV === "production" ? undefined : "dev-secret");
+
 export const authConfig = {
   session: { strategy: "jwt" },
+  secret: authSecret,
   providers: [
     Credentials({
       name: "Credentials",

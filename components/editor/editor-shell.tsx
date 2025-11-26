@@ -12,6 +12,7 @@ type DraftPayload = {
   title: string;
   summary: string;
   content: string;
+  tags: string;
 };
 
 export function EditorShell() {
@@ -20,6 +21,7 @@ export function EditorShell() {
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("<p>Welcome to the Lab 3 editor.</p>");
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
+  const [tagsInput, setTagsInput] = useState("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -32,6 +34,7 @@ export function EditorShell() {
       setTitle(parsed.title ?? "");
       setSummary(parsed.summary ?? "");
       setContent(parsed.content ?? "");
+      setTagsInput(parsed.tags ?? "");
     }
   }, []);
 
@@ -42,12 +45,13 @@ export function EditorShell() {
         title,
         summary,
         content,
+        tags: tagsInput,
         ...payload,
       };
       window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
       setStatusMessage("Draft saved locally");
     },
-    [content, summary, title]
+    [content, summary, tagsInput, title]
   );
 
   const clearDraft = useCallback(() => {
@@ -81,6 +85,11 @@ export function EditorShell() {
     setIsPublishing(true);
     setStatusMessage(null);
     try {
+      const tags = tagsInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
       const response = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,6 +99,7 @@ export function EditorShell() {
           content,
           coverUrl: coverUrl ?? "",
           status: "published",
+          tags,
         }),
       });
 
@@ -102,6 +112,7 @@ export function EditorShell() {
       setSummary("");
       setContent("<p></p>");
       setCoverUrl(null);
+      setTagsInput("");
       setStatusMessage("Post published. Redirecting...");
       router.refresh();
     } catch (error) {
@@ -109,7 +120,7 @@ export function EditorShell() {
     } finally {
       setIsPublishing(false);
     }
-  }, [clearDraft, content, coverUrl, router, summary, title]);
+  }, [clearDraft, content, coverUrl, router, summary, tagsInput, title]);
 
   const previewMarkup = useMemo(() => ({ __html: content }), [content]);
 
@@ -143,6 +154,12 @@ export function EditorShell() {
               placeholder="Short summary for feeds and previews"
               value={summary}
               onChange={(event) => setSummary(event.target.value)}
+            />
+            <input
+              className="w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)] focus:outline-none"
+              placeholder="Tags (comma separated: design, react, editor)"
+              value={tagsInput}
+              onChange={(event) => setTagsInput(event.target.value)}
             />
             <RichEditor value={content} onChange={setContent} />
             <div className="flex flex-wrap gap-3">

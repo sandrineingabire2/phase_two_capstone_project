@@ -3,6 +3,16 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import {
+  mapPostDetail,
+  mapPostSummary,
+  postSummaryInclude,
+  type PostDetailPayload,
+  type PostSummaryPayload,
+} from "@/lib/post-utils";
+import { syncTags } from "@/lib/tag-utils";
+
+const tagArraySchema = z.array(z.string().min(2)).max(6);
 
 const updateSchema = z.object({
   title: z.string().min(3).optional(),
@@ -10,6 +20,7 @@ const updateSchema = z.object({
   content: z.string().min(10).optional(),
   coverUrl: z.string().url().optional().or(z.literal("")),
   status: z.enum(["draft", "published"]).optional(),
+  tags: tagArraySchema.optional(),
 });
 
 async function findPost(postId: string) {
@@ -18,6 +29,7 @@ async function findPost(postId: string) {
       deletedAt: null,
       OR: [{ id: postId }, { slug: postId }],
     },
+    include: postSummaryInclude,
   });
 }
 
@@ -42,18 +54,13 @@ async function nextSlug(currentId: string, title?: string) {
 }
 
 export async function GET(_request: Request, { params }: { params: { postId: string } }) {
-  const post = await prisma.post.findFirst({
-    where: {
-      deletedAt: null,
-      OR: [{ id: params.postId }, { slug: params.postId }],
-    },
-  });
+  const post = await findPost(params.postId);
 
   if (!post) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ post });
+  return NextResponse.json({ post: mapPostDetail(post as PostDetailPayload) });
 }
 
 export async function PUT(request: Request, { params }: { params: { postId: string } }) {
@@ -83,7 +90,7 @@ export async function PUT(request: Request, { params }: { params: { postId: stri
   const payload = parsed.data;
   const slug = await nextSlug(post.id, payload.title);
 
-  const updated = await prisma.post.update({
+  await prisma.post.update({
     where: { id: post.id },
     data: {
       slug: slug ?? post.slug,
@@ -93,16 +100,19 @@ export async function PUT(request: Request, { params }: { params: { postId: stri
       coverImage: payload.coverUrl ?? post.coverImage,
       status: payload.status ?? post.status,
     },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      status: true,
-      updatedAt: true,
-    },
   });
 
-  return NextResponse.json({ post: updated });
+  await syncTags(post.id, payload.tags);
+
+  const hydrated = await findPost(post.id);
+
+  if (!hydrated) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({
+    post: mapPostSummary(hydrated as PostSummaryPayload),
+  });
 }
 
 export async function DELETE(
@@ -115,7 +125,12 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const post = await findPost(params.postId);
+  const post = await prisma.post.findFirst({
+    where: {
+      deletedAt: null,
+      OR: [{ id: params.postId }, { slug: params.postId }],
+    },
+  });
 
   if (!post) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

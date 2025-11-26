@@ -1,66 +1,72 @@
-import Link from "next/link";
-
-const tooling = [
+const aboutSections = [
   {
-    name: "Next.js 16 + App Router",
-    detail: "Server components, layouts, and streaming-ready routes.",
+    title: "Who we are",
+    paragraphs: [
+      "We are a team passionate about building modern technology.",
+      "Our mission is to create simple, powerful digital solutions.",
+      "We focus on clean design, strong performance, and reliability.",
+      "Every project is built with care, precision, and innovation.",
+      "We exist to make technology work better for everyone.",
+    ],
   },
-  { name: "TypeScript + ESLint", detail: "Strict mode with auto-generated types." },
   {
-    name: "Tailwind CSS v4",
-    detail: "Utility-first styling with custom tokens in globals.",
+    title: "How we work",
+    paragraphs: [
+      "We believe technology should be easy and impactful.",
+      "Our work combines creativity with smart engineering.",
+      "From design to deployment, we deliver quality at every step.",
+      "We help businesses grow through modern digital tools.",
+      "Your ideas inspire the solutions we build.",
+    ],
   },
-  { name: "Husky-ready", detail: "Add pre-commit hooks without reconfiguring lint." },
+  {
+    title: "Why we build",
+    paragraphs: [
+      "Founded on a love for innovation and problem-solving.",
+      "We turn ideas into functional, user-friendly technology.",
+      "Our approach is transparent, flexible, and focused on results.",
+      "We design products that evolve with your needs.",
+      "We’re here to shape meaningful digital experiences.",
+    ],
+  },
 ];
 
 export default function AboutPage() {
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-semibold text-slate-900">About this lab</h1>
-        <p className="mt-4 text-slate-600">
-          This starter keeps the focus on routing and layout experiments. The header,
-          footer, and grid container live in shared components so feature teams can work
-          inside `app/` without copy-pasting structure.
-        </p>
-        <p className="mt-4 text-slate-600">
-          Explore the file tree to see how reusable pieces are grouped under{" "}
-          <code className="rounded bg-slate-100 px-2 py-1 text-sm">components/</code> and
-          supporting utilities live in{" "}
-          <code className="rounded bg-slate-100 px-2 py-1 text-sm">lib/</code> and{" "}
-          <code className="rounded bg-slate-100 px-2 py-1 text-sm">hooks/</code>.
+        <h1 className="text-3xl font-semibold text-slate-900">About us</h1>
+        <p className="mt-4 text-lg text-slate-600">
+          We are a team passionate about building modern technology. Our mission is to
+          create simple, powerful digital solutions where clean design, performance, and
+          reliability meet.
         </p>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-xl font-semibold text-slate-900">Stack summary</h2>
-        <ul className="mt-6 space-y-4">
-          {tooling.map((tool) => (
-            <li key={tool.name} className="rounded-xl border border-slate-100 p-4">
-              <p className="text-base font-semibold text-slate-900">{tool.name}</p>
-              <p className="text-sm text-slate-600">{tool.detail}</p>
-            </li>
-          ))}
-        </ul>
+      <section className="grid gap-6 md:grid-cols-2">
+        {aboutSections.map((section) => (
+          <article
+            key={section.title}
+            className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
+            <h2 className="text-xl font-semibold text-slate-900">{section.title}</h2>
+            <ul className="space-y-2 text-sm text-slate-600">
+              {section.paragraphs.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
       </section>
 
       <section className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 p-6 text-center">
-        <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Next step</p>
+        <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Our promise</p>
         <h3 className="mt-3 text-2xl font-semibold text-slate-900">
-          Add a feature-specific route group.
+          We exist to make technology work better for everyone.
         </h3>
         <p className="mt-3 text-slate-600">
-          Duplicate this pattern for additional labs or spin up API routes, metadata, and
-          loading states under dedicated directories.
+          Clean code, clean design, and clear purpose power every solution we deliver.
         </p>
-        <div className="mt-4">
-          <Link
-            href="/projects"
-            className="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
-          >
-            View the sample project listing
-          </Link>
-        </div>
       </section>
     </div>
   );

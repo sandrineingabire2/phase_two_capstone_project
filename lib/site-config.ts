@@ -1,8 +1,12 @@
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const siteMetadata = {
-  name: "Lab 1 Studio",
+  name: "Lab Studio",
   description:
-    "A starter lab for experimenting with the Next.js App Router, layout primitives, and modern tooling.",
+    "A multi-lab workspace for experimenting with the Next.js App Router, authentication, editors, and social publishing.",
   author: "XP Accelerator Team",
+  siteUrl,
+  ogImage: `${siteUrl}/api/og?title=Lab%20Studio`,
   links: {
     github: "https://github.com/",
   },
@@ -10,9 +14,11 @@ export const siteMetadata = {
 
 export const navigationLinks = [
   { href: "/", label: "Overview" },
+  { href: "/feed", label: "Feed" },
   { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
   { href: "/posts", label: "Posts" },
+  { href: "/tags", label: "Tags" },
   { href: "/editor", label: "Editor" },
 ];
 
@@ -49,12 +55,17 @@ export const labMilestones = [
   },
   {
     title: "Posts CRUD",
-    status: "In Progress",
+    status: "Complete",
     description: "Full lifecycle APIs, listing, detail pages, and media handling.",
   },
   {
-    title: "Content Iteration",
-    status: "Upcoming",
-    description: "Swap in real data, connect APIs, and extend navigation.",
+    title: "Social + Discovery",
+    status: "Complete",
+    description: "Feeds, search, tagging, and social interactions for discovery.",
+  },
+  {
+    title: "Quality & SEO",
+    status: "Complete",
+    description: "Strict typing, automated tests, and Open Graph metadata.",
   },
 ];

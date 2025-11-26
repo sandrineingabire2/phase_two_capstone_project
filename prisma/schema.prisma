@@ -15,6 +15,10 @@ model User {
   bio          String?
   avatarUrl    String?
   posts        Post[]
+  comments     Comment[]
+  reactions    Reaction[]
+  followers    Follow[]  @relation("following")
+  following    Follow[]  @relation("followers")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -35,6 +39,70 @@ model Post {
   deletedAt  DateTime?
   author     User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId   String
+  tags       PostTag[]
+  reactions  Reaction[]
+  comments   Comment[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+}
+
+enum ReactionType {
+  like
+  clap
+}
+
+model Reaction {
+  id        String        @id @default(cuid())
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      ReactionType
+  createdAt DateTime      @default(now())
+
+  @@unique([postId, userId, type])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  posts     PostTag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PostTag {
+  postId     String
+  tagId      String
+  post       Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag        Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@id([postId, tagId])
+}
+
+model Follow {
+  followerId String
+  followingId String
+  follower    User   @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
 }

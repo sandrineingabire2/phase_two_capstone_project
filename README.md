@@ -66,7 +66,14 @@ npm install
 npm run dev
 ```
 
-Set environment variables in `.env` (a starter file is already provided) and run `npx prisma migrate dev` whenever you change the schema.
+Create a `.env.local` file with:
+
+```
+DATABASE_URL="file:./prisma/dev.db"
+AUTH_SECRET="set-a-random-string-here"
+```
+
+Run `npx prisma migrate dev` whenever you change the schema.
 
 ---
 
@@ -112,3 +119,54 @@ Run `npm run dev` and visit `/editor` after signing in to experiment with Lab 3.
 5. Manage lifecycle (draft/publish/delete) from `/account`
 
 All linting/formatting continues to run via Husky (`npm run lint`, `npm run format:check`).
+
+---
+
+## Lab 5 — Feeds, Tags & Search
+
+### Discovery upgrades
+
+- **Personalized Feed (`/feed`)**: SSR hero sections (latest + recommended) paired with a React Query infinite scroll that surfaces Latest, Recommended, or Following tabs with pagination and debounced load states.
+- **Tag system**: Prisma-backed `Tag` + `PostTag` models, `/api/tags`, `/tags` directory, and `/tags/[slug]` detail pages allow filtering posts by topic across the UI (Posts page filters, Post cards, Feed, etc.).
+- **Search UI**: `PostSearch` component debounces client-side queries against `/api/posts?q=…` to deliver instant suggestions without leaving the page.
+
+---
+
+## Lab 6 — Comments, Reactions & Social Features
+
+### Social primitives
+
+- **Nested comments** powered by `Comment` model, `/api/posts/[postId]/comments`, and the `CommentsPanel` UI with reply threads, optimistic refresh, and auth-aware states.
+- **Reactions bar**: likes + claps via `/api/posts/[postId]/reactions` with optimistic toggles and counts displayed on cards and the article detail page.
+- **Follow authors**: `Follow` model, `/api/profile/[userId]/follow` API, `FollowButton` client component, and a "Following" feed tab personalized to authenticated users.
+
+---
+
+## Lab 7 — State Management & Data Fetching
+
+### Data layer
+
+- **React Query provider** wraps the entire app (`components/providers/query-provider.tsx`) to handle caching, mutations, and infinite queries.
+- **Context API**: `ThemeProvider` + `ThemeToggle` store global UI state (light/dark) with persistence and CSS variable theming.
+- **Custom hooks**: `useDebouncedValue`, `useTheme`, and existing hooks provide lightweight global state without extra libraries.
+
+---
+
+## Lab 8 — TypeScript & Quality
+
+### Type safety & tests
+
+- **Shared types**: `types/content.ts` defines Post/User/Comment/Tag/Reaction shapes reused by APIs and components.
+- **Strict tooling**: ESLint 9, Prettier 3, Husky pre-commit, and `npm run test` (Jest + Testing Library) guard regressions.
+- **Sample tests**: `__tests__/theme-toggle.test.tsx`, `post-card.test.tsx`, and `projects-page.test.tsx` demonstrate both component and page-level coverage.
+
+---
+
+## Lab 9 — SEO, Performance & SSG/SSR
+
+### Production polish
+
+- **Dynamic metadata**: `/posts/[slug]` exposes per-post Open Graph + Twitter cards referencing `siteMetadata.siteUrl`.
+- **ISR & typed routes**: posts, tags, and feeds leverage `generateStaticParams`, `revalidate`, and typed route safety.
+- **Media performance**: `next/image` responsive sizes across listings, hero covers, and feed surfaces; `next.config.ts` remotePatterns keep optimization on.
+- **Analytics-ready structure**: server-rendered hero sections plus client-side streaming feed offer a balanced SSR/CSR strategy.
