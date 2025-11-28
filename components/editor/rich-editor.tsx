@@ -4,8 +4,13 @@ import dynamic from "next/dynamic";
 import { useMemo, useRef } from "react";
 import type JoditEditor from "jodit-react";
 
-const Editor = dynamic(async () => (await import("jodit-react")).default, {
+const Editor = dynamic(() => import("jodit-react"), {
   ssr: false,
+  loading: () => (
+    <div className="h-[360px] bg-gray-100 rounded-2xl flex items-center justify-center">
+      Loading editor...
+    </div>
+  ),
 });
 
 export type RichEditorProps = {

@@ -10,13 +10,18 @@
     "test": "jest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
     "@tanstack/react-query": "^5.90.11",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.8.0",
     "dotenv": "^17.2.3",
     "jodit": "^4.7.9",
     "jodit-react": "^5.2.38",
@@ -46,6 +51,7 @@
     "tailwindcss": "^4",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5",
     "whatwg-fetch": "^3.6.20"
   }

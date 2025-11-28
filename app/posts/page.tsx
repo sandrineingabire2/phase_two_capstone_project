@@ -14,7 +14,7 @@ type PostsPageProps = {
 };
 
 export default async function PostsPage({ searchParams }: PostsPageProps) {
-  const activeTag = searchParams?.tag;
+  const activeTag = searchParams?.tag || undefined;
 
   const posts = await prisma.post.findMany({
     where: {
@@ -47,13 +47,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         <div className="mt-4 flex gap-3">
           <Link
             href="/editor"
-            className="rounded-full bg-[var(--color-foreground)] px-5 py-2 text-sm font-semibold text-white"
+            className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
           >
             New post
           </Link>
           <Link
             href="/account"
-            className="rounded-full border border-[var(--color-border)] px-5 py-2 text-sm font-semibold text-[var(--color-foreground)]"
+            className="rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
           >
             Manage drafts
           </Link>

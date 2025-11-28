@@ -8,18 +8,37 @@ const reactionSchema = z.object({
 });
 
 async function resolvePostId(postId: string) {
-  const post = await prisma.post.findFirst({
-    where: {
-      deletedAt: null,
-      OR: [{ id: postId }, { slug: postId }],
-    },
-  });
+  try {
+    // Try to find by slug first (more common)
+    let post = await prisma.post.findFirst({
+      where: {
+        slug: postId,
+        deletedAt: null,
+        status: "published",
+      },
+      select: { id: true },
+    });
 
-  if (!post) {
-    throw new Error("NOT_FOUND");
+    // If not found by slug, try by ID
+    if (!post) {
+      post = await prisma.post.findFirst({
+        where: {
+          id: postId,
+          deletedAt: null,
+          status: "published",
+        },
+        select: { id: true },
+      });
+    }
+
+    if (!post) {
+      throw new Error("NOT_FOUND");
+    }
+
+    return post.id;
+  } catch (error) {
+    throw error;
   }
-
-  return post.id;
 }
 
 async function getTotals(postId: string) {

@@ -21,18 +21,25 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const post = await prisma.post.findFirst({
-    where: { slug: params.slug, status: "published", deletedAt: null },
-    select: { title: true, excerpt: true, coverImage: true },
+  const { slug } = await params;
+  const post = await prisma.post.findUnique({
+    where: { slug },
+    select: {
+      title: true,
+      excerpt: true,
+      coverImage: true,
+      status: true,
+      deletedAt: true,
+    },
   });
 
-  if (!post) {
+  if (!post || post.deletedAt || post.status !== "published") {
     return {};
   }
 
-  const url = `${siteMetadata.siteUrl}/posts/${params.slug}`;
+  const url = `${siteMetadata.siteUrl}/posts/${slug}`;
   const description = post.excerpt ?? siteMetadata.description;
 
   return {
@@ -56,11 +63,20 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-  const postRecord = await prisma.post.findFirst({
-    where: { slug: params.slug, status: "published", deletedAt: null },
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const postRecord = await prisma.post.findUnique({
+    where: { slug },
     include: postDetailInclude,
   });
+
+  if (postRecord?.deletedAt) {
+    notFound();
+  }
 
   if (!postRecord) {
     notFound();
@@ -105,7 +121,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           </div>
         ) : null}
         <div
-          className="prose prose-slate max-w-none text-[var(--color-foreground)]"
+          className="prose prose-slate max-w-none text-slate-900 prose-img:rounded-2xl prose-img:shadow-lg prose-img:mx-auto prose-img:max-w-full prose-img:h-auto"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>

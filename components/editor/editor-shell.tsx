@@ -41,15 +41,21 @@ export function EditorShell() {
   const persistDraft = useCallback(
     (payload?: Partial<DraftPayload>) => {
       if (typeof window === "undefined") return;
-      const updated: DraftPayload = {
-        title,
-        summary,
-        content,
-        tags: tagsInput,
-        ...payload,
-      };
-      window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-      setStatusMessage("Draft saved locally");
+      try {
+        const updated: DraftPayload = {
+          title,
+          summary,
+          content,
+          tags: tagsInput,
+          ...payload,
+        };
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+        setStatusMessage("Draft saved locally");
+        setTimeout(() => setStatusMessage(null), 3000);
+      } catch (error) {
+        setStatusMessage("Failed to save draft");
+        console.error("Draft save error:", error);
+      }
     },
     [content, summary, tagsInput, title]
   );
@@ -60,6 +66,10 @@ export function EditorShell() {
   }, []);
 
   const handleImageUpload = useCallback(async (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("File too large (max 5MB)");
+    }
+
     const body = new FormData();
     body.append("file", file);
 
@@ -69,7 +79,8 @@ export function EditorShell() {
     });
 
     if (!response.ok) {
-      throw new Error("Upload failed");
+      const error = await response.json().catch(() => ({ error: "Upload failed" }));
+      throw new Error(error.error || "Upload failed");
     }
 
     const data = (await response.json()) as { url: string };
@@ -104,7 +115,8 @@ export function EditorShell() {
       });
 
       if (!response.ok) {
-        throw new Error("Unable to publish");
+        const error = await response.json().catch(() => ({ error: "Unable to publish" }));
+        throw new Error(error.error || "Unable to publish");
       }
 
       clearDraft();
@@ -143,20 +155,20 @@ export function EditorShell() {
         <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
           <div className="space-y-4">
             <input
-              className="w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-2xl font-semibold text-[var(--color-foreground)] focus:border-[var(--color-accent)] focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-2xl font-semibold text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
               placeholder="Untitled story"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
             <textarea
-              className="w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)] focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
               rows={3}
               placeholder="Short summary for feeds and previews"
               value={summary}
               onChange={(event) => setSummary(event.target.value)}
             />
             <input
-              className="w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-sm text-[var(--color-foreground)] focus:border-[var(--color-accent)] focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
               placeholder="Tags (comma separated: design, react, editor)"
               value={tagsInput}
               onChange={(event) => setTagsInput(event.target.value)}
@@ -165,21 +177,21 @@ export function EditorShell() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-foreground)]"
+                className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 onClick={() => setIsPreviewing((prev) => !prev)}
               >
                 {isPreviewing ? "Hide preview" : "Preview"}
               </button>
               <button
                 type="button"
-                className="rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-foreground)]"
+                className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 onClick={() => persistDraft()}
               >
                 Save draft locally
               </button>
               <button
                 type="button"
-                className="rounded-full bg-[var(--color-foreground)] px-4 py-2 text-sm font-semibold text-white"
+                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60 transition-colors"
                 onClick={handlePublish}
                 disabled={isPublishing}
               >
@@ -207,7 +219,8 @@ export function EditorShell() {
                     const url = await handleImageUpload(file);
                     setCoverUrl(url);
                     setContent(
-                      (prev) => `${prev}<p><img src=\"${url}\" alt=\"Story asset\" /></p>`
+                      (prev) =>
+                        `${prev}<div style="text-align: center; margin: 20px 0;"><img src="${url}" alt="Story asset" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" /></div>`
                     );
                   } catch (error) {
                     setStatusMessage(

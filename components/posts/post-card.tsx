@@ -10,13 +10,13 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
       {post.coverImage ? (
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden">
           <Image
             src={post.coverImage}
             alt={post.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover"
+            className="object-cover transition-transform hover:scale-105"
             loading="lazy"
           />
         </div>
