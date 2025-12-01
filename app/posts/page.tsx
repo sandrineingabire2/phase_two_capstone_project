@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { PostCard } from "@/components/posts/post-card";
+import { PostsList } from "@/components/posts/posts-list";
 import { PostSearch } from "@/components/posts/post-search";
 import { TagFilter } from "@/components/posts/tag-filter";
 import { mapPostSummary, postSummaryInclude } from "@/lib/post-utils";
@@ -16,6 +17,7 @@ type PostsPageProps = {
 export default async function PostsPage({ searchParams }: PostsPageProps) {
   const params = await searchParams;
   const activeTag = params?.tag || undefined;
+  const session = await auth();
 
   const posts = await prisma.post.findMany({
     where: {
@@ -61,15 +63,10 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         </div>
       </section>
 
-      {posts.length === 0 ? (
-        <p className="text-sm text-[var(--color-muted)]">No published posts yet.</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={mapPostSummary(post)} />
-          ))}
-        </div>
-      )}
+      <PostsList
+        initialPosts={posts.map(mapPostSummary)}
+        currentUserId={session?.user?.id}
+      />
     </div>
   );
 }

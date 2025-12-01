@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PostDeleteButton } from "@/components/posts/post-delete-button";
 import type { PostSummary } from "@/types/content";
 
 type PostCardProps = {
   post: PostSummary;
+  currentUserId?: string;
+  onDeleted?: () => void;
 };
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
+  const isOwner = currentUserId === post.author.id;
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
       {post.coverImage ? (
@@ -49,12 +53,15 @@ export function PostCard({ post }: PostCardProps) {
           <span>👏 {post.reactionTotals.claps}</span>
           <span>💬 {post.commentCount}</span>
         </div>
-        <Link
-          href={`/posts/${post.slug}`}
-          className="inline-flex items-center text-sm font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
-        >
-          Read more →
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href={`/posts/${post.slug}`}
+            className="inline-flex items-center text-sm font-semibold text-[var(--color-foreground)] underline-offset-4 hover:underline"
+          >
+            Read more →
+          </Link>
+          <PostDeleteButton postId={post.id} isOwner={isOwner} onDeleted={onDeleted} />
+        </div>
       </div>
     </article>
   );

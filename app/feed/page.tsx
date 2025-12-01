@@ -27,17 +27,7 @@ export default async function FeedPage() {
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-sm">
-        <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">
-          Lab 5 · Discovery
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold text-[var(--color-foreground)]">
-          Personalized feed
-        </h1>
-        <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Explore the most recent posts, trending recommendations, or the authors you
-          follow. This page mixes SSR hero sections with React Query powered infinite
-          scroll.
-        </p>
+        <h1 className="text-3xl font-semibold text-[var(--color-foreground)]">UPDATES</h1>
       </section>
 
       <section className="space-y-4">

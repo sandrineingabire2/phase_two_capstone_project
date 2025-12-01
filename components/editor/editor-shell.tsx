@@ -101,23 +101,46 @@ export function EditorShell() {
         .map((tag) => tag.trim())
         .filter(Boolean);
 
+      const payload = {
+        title,
+        excerpt: summary,
+        content,
+        coverUrl: coverUrl ?? "",
+        status: "published",
+        tags,
+      };
+
+      console.log("Publishing post with payload:", payload);
+
       const response = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          excerpt: summary,
-          content,
-          coverUrl: coverUrl ?? "",
-          status: "published",
-          tags,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: "Unable to publish" }));
-        throw new Error(error.error || "Unable to publish");
+        const errorText = await response.text();
+        console.log("Error response:", errorText);
+        let errorMessage = `HTTP ${response.status}`;
+        try {
+          const error = JSON.parse(errorText);
+          if (typeof error.error === "string") {
+            errorMessage = error.error;
+          } else if (typeof error.message === "string") {
+            errorMessage = error.message;
+          } else {
+            errorMessage = JSON.stringify(error);
+          }
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(String(errorMessage));
       }
+
+      const result = await response.json();
+      console.log("Success response:", result);
 
       clearDraft();
       setTitle("");
@@ -125,9 +148,16 @@ export function EditorShell() {
       setContent("<p></p>");
       setCoverUrl(null);
       setTagsInput("");
-      setStatusMessage("Post published. Redirecting...");
-      router.refresh();
+      setStatusMessage("Post published successfully!");
+
+      // Redirect to the new post
+      if (result.post?.slug) {
+        router.push(`/posts/${result.post.slug}`);
+      } else {
+        router.refresh();
+      }
     } catch (error) {
+      console.error("Publish error:", error);
       setStatusMessage(error instanceof Error ? error.message : "Publish failed");
     } finally {
       setIsPublishing(false);

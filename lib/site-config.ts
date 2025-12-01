@@ -1,9 +1,8 @@
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const siteMetadata = {
-  name: "Lab Studio",
-  description:
-    "A multi-lab workspace for experimenting with the Next.js App Router, authentication, editors, and social publishing.",
+  name: "DailySpark",
+  description: "",
   author: "XP Accelerator Team",
   siteUrl,
   ogImage: `${siteUrl}/api/og?title=Lab%20Studio`,
@@ -16,9 +15,7 @@ export const navigationLinks = [
   { href: "/", label: "Overview" },
   { href: "/feed", label: "Feed" },
   { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
   { href: "/posts", label: "Posts" },
-  { href: "/tags", label: "Tags" },
   { href: "/editor", label: "Editor" },
 ];
 
