@@ -8,13 +8,14 @@ import { mapPostSummary, postSummaryInclude } from "@/lib/post-utils";
 export const revalidate = 120;
 
 type PostsPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     tag?: string;
-  };
+  }>;
 };
 
 export default async function PostsPage({ searchParams }: PostsPageProps) {
-  const activeTag = searchParams?.tag || undefined;
+  const params = await searchParams;
+  const activeTag = params?.tag || undefined;
 
   const posts = await prisma.post.findMany({
     where: {
