@@ -77,10 +77,10 @@ function buildWhereClause(params: URLSearchParams, sessionUserId?: string) {
 
   if (query) {
     where.OR = [
-      { title: { contains: query, mode: "insensitive" } },
-      { excerpt: { contains: query, mode: "insensitive" } },
-      { content: { contains: query, mode: "insensitive" } },
-      { tags: { some: { tag: { name: { contains: query, mode: "insensitive" } } } } },
+      { title: { contains: query } },
+      { excerpt: { contains: query } },
+      { content: { contains: query } },
+      { tags: { some: { tag: { name: { contains: query } } } } },
     ];
   }
 
