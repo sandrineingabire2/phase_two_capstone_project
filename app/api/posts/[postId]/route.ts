@@ -53,8 +53,12 @@ async function nextSlug(currentId: string, title?: string) {
   }
 }
 
-export async function GET(_request: Request, { params }: { params: { postId: string } }) {
-  const post = await findPost(params.postId);
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
+  const { postId } = await params;
+  const post = await findPost(postId);
 
   if (!post) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -63,14 +67,18 @@ export async function GET(_request: Request, { params }: { params: { postId: str
   return NextResponse.json({ post: mapPostDetail(post as PostDetailPayload) });
 }
 
-export async function PUT(request: Request, { params }: { params: { postId: string } }) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
   const session = await auth();
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const post = await findPost(params.postId);
+  const { postId } = await params;
+  const post = await findPost(postId);
 
   if (!post) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -117,7 +125,7 @@ export async function PUT(request: Request, { params }: { params: { postId: stri
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   const session = await auth();
 
@@ -125,10 +133,10 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { postId } = await params;
   const post = await prisma.post.findFirst({
     where: {
-      deletedAt: null,
-      OR: [{ id: params.postId }, { slug: params.postId }],
+      OR: [{ id: postId }, { slug: postId }],
     },
   });
 
@@ -140,9 +148,8 @@ export async function DELETE(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.post.update({
+  await prisma.post.delete({
     where: { id: post.id },
-    data: { deletedAt: new Date(), status: "draft" },
   });
 
   return NextResponse.json({ success: true });

@@ -170,10 +170,7 @@ export function EditorShell() {
     <ProtectedContent>
       <div className="space-y-6">
         <header className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">
-            Lab 3 · Editor
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold text-[var(--color-foreground)]">
+          <h1 className="text-3xl font-semibold text-[var(--color-foreground)]">
             Create a new entry
           </h1>
           <p className="mt-2 text-sm text-[var(--color-muted)]">

@@ -22,16 +22,20 @@ async function getStats(userId: string, viewerId?: string) {
   };
 }
 
-export async function GET(_request: Request, { params }: { params: { userId: string } }) {
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
   const session = await auth();
 
-  const stats = await getStats(params.userId, session?.user?.id);
+  const { userId } = await params;
+  const stats = await getStats(userId, session?.user?.id);
   return NextResponse.json({ stats });
 }
 
 export async function POST(
   _request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await auth();
 
@@ -39,7 +43,8 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (session.user.id === params.userId) {
+  const { userId } = await params;
+  if (session.user.id === userId) {
     return NextResponse.json({ error: "You cannot follow yourself" }, { status: 400 });
   }
 
@@ -47,7 +52,7 @@ export async function POST(
     where: {
       followerId_followingId: {
         followerId: session.user.id,
-        followingId: params.userId,
+        followingId: userId,
       },
     },
   });
@@ -57,7 +62,7 @@ export async function POST(
       where: {
         followerId_followingId: {
           followerId: session.user.id,
-          followingId: params.userId,
+          followingId: userId,
         },
       },
     });
@@ -65,12 +70,12 @@ export async function POST(
     await prisma.follow.create({
       data: {
         followerId: session.user.id,
-        followingId: params.userId,
+        followingId: userId,
       },
     });
   }
 
-  const stats = await getStats(params.userId, session.user.id);
+  const stats = await getStats(userId, session.user.id);
 
   return NextResponse.json({ stats });
 }

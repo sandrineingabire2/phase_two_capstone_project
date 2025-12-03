@@ -58,11 +58,15 @@ async function getTotals(postId: string) {
   );
 }
 
-export async function GET(_request: Request, { params }: { params: { postId: string } }) {
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
   const session = await auth();
 
   try {
-    const postId = await resolvePostId(params.postId);
+    const { postId: postIdParam } = await params;
+    const postId = await resolvePostId(postIdParam);
     const totals = await getTotals(postId);
     let userReactions: Array<"like" | "clap"> = [];
 
@@ -83,7 +87,10 @@ export async function GET(_request: Request, { params }: { params: { postId: str
   }
 }
 
-export async function POST(request: Request, { params }: { params: { postId: string } }) {
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -99,7 +106,8 @@ export async function POST(request: Request, { params }: { params: { postId: str
   let postId: string;
 
   try {
-    postId = await resolvePostId(params.postId);
+    const { postId: postIdParam } = await params;
+    postId = await resolvePostId(postIdParam);
   } catch (error) {
     if (error instanceof Error && error.message === "NOT_FOUND") {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });

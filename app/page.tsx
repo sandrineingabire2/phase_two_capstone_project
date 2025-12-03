@@ -84,10 +84,6 @@ export default function Home() {
           <h2 className="text-xl font-semibold text-[var(--color-foreground)]">
             Protected sandbox
           </h2>
-          <p className="text-sm text-[var(--color-muted)]">
-            Client-side routing checks ensure only signed-in builders can trigger
-            sensitive actions.
-          </p>
         </div>
         <div className="mt-4 rounded-xl border border-dashed border-[var(--color-border)] bg-white/60 p-4 text-sm text-[var(--color-foreground)]">
           <ProtectedContent>

@@ -73,9 +73,13 @@ function buildTree(records: Array<CommentNode & { parentId?: string | null }>) {
   return roots;
 }
 
-export async function GET(_request: Request, { params }: { params: { postId: string } }) {
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
   try {
-    const postId = await resolvePostId(params.postId);
+    const { postId: postIdParam } = await params;
+    const postId = await resolvePostId(postIdParam);
     const comments = await prisma.comment.findMany({
       where: { postId, deletedAt: null },
       orderBy: { createdAt: "asc" },
@@ -104,10 +108,14 @@ export async function GET(_request: Request, { params }: { params: { postId: str
   }
 }
 
-export async function POST(request: Request, { params }: { params: { postId: string } }) {
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ postId: string }> }
+) {
   try {
     console.log("DEBUG: POST request to comments API");
-    console.log("DEBUG: Params:", params);
+    const paramsResolved = await params;
+    console.log("DEBUG: Params:", paramsResolved);
 
     const session = await auth();
     console.log(
@@ -140,7 +148,7 @@ export async function POST(request: Request, { params }: { params: { postId: str
     let postId: string;
 
     try {
-      postId = await resolvePostId(params.postId);
+      postId = await resolvePostId(paramsResolved.postId);
       console.log("DEBUG: Resolved postId:", postId);
     } catch (error) {
       console.log("DEBUG: Post resolution failed:", error);

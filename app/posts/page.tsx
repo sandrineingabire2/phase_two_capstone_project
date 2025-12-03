@@ -33,16 +33,9 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-sm">
-        <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">
-          Lab 4 · Publishing
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold text-[var(--color-foreground)]">
+        <h1 className="text-3xl font-semibold text-[var(--color-foreground)]">
           Latest posts
         </h1>
-        <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Draft in the editor, publish when ready, and preview responsive media with
-          optimized delivery.
-        </p>
         <div className="mt-6 grid gap-4 lg:grid-cols-[2fr_1fr]">
           <PostSearch />
           <TagFilter activeTag={activeTag} />
