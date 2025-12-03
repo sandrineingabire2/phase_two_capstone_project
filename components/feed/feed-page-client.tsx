@@ -58,8 +58,10 @@ export function FeedPageClient({ isAuthenticated }: FeedPageClientProps) {
 
   const query = useInfiniteQuery({
     queryKey: ["feed", activeTab.id],
-    queryFn: ({ pageParam }) => fetchFeed(activeTab, pageParam),
+    queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
+      fetchFeed(activeTab, pageParam),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialPageParam: undefined,
     enabled: !activeTab.requiresAuth || isAuthenticated,
   });
 

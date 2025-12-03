@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useRef } from "react";
-import type JoditEditor from "jodit-react";
 
 const Editor = dynamic(() => import("jodit-react"), {
   ssr: false,
@@ -20,7 +19,7 @@ export type RichEditorProps = {
 };
 
 export function RichEditor({ value, onChange, onBlur }: RichEditorProps) {
-  const editorRef = useRef<JoditEditor | null>(null);
+  const editorRef = useRef(null);
 
   const config = useMemo(
     () => ({

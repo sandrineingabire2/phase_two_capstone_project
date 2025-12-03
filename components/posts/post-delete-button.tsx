@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 type PostDeleteButtonProps = {
   postId: string;
@@ -11,7 +10,6 @@ type PostDeleteButtonProps = {
 
 export function PostDeleteButton({ postId, isOwner, onDeleted }: PostDeleteButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
 
   if (!isOwner) return null;
 
