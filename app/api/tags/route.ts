@@ -10,7 +10,6 @@ export async function GET(request: Request) {
       ? {
           name: {
             contains: query,
-            mode: "insensitive",
           },
         }
       : undefined,
